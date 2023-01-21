@@ -5,7 +5,7 @@ const { markAsUntransferable } = require('worker_threads');
 const { off } = require('process');
 const { runInContext } = require('vm');
 
-// <====== menu questions prompt ======>
+// <====== user input questions prompt ======>
 const employee_add = [
     {
         type: 'confirm',
@@ -70,6 +70,8 @@ const intern_info = [
     }
 ]
 
+// module.exports = employee_add, employee_type, general_info, manager_info, engineer_info, intern_info
+
 function Data(level, name, email, id, other) {
     this.level = level;
     this.name = name;
@@ -80,18 +82,19 @@ function Data(level, name, email, id, other) {
 
 let employeeAggData = [];
 
+async function fork() {
+    const employeeType = await inquirer.prompt(employee_type);
+    const { type } = employeeType;
+    return type;
+}
+
 async function manager() {
     const generalInfo = await inquirer.prompt(general_info);
     const managerInfo = await inquirer.prompt(manager_info);
     const { name, email, id } = generalInfo;
     const { office } = managerInfo;
     const data = new Data('manager', name, email, id, office);
-}
-
-async function fork() {
-    const employeeType = await inquirer.prompt(employee_type);
-    const { type } = employeeType;
-    return type;
+    employeeAggData.push(data);
 }
 
 async function engineer() {
@@ -100,6 +103,7 @@ async function engineer() {
     const { name, email, id } = generalInfo;
     const { github } = engineerInfo;
     const data = new Data('engineer', name, email, id, github);
+    employeeAggData.push(data);
 }
 
 async function intern() {
@@ -108,6 +112,7 @@ async function intern() {
     const { name, email, id } = generalInfo;
     const { school } = internInfo;
     const data = new Data('intern', name, email, id, school);
+    employeeAggData.push(data);
 }
 
 async function again() {
@@ -118,8 +123,7 @@ async function again() {
 
 class Execute {
     async initialize() {
-        const select = await fork();
-        switch (select) {
+        switch (await fork()) {
             case 'manager':
                 await manager();
                 break;
@@ -134,12 +138,12 @@ class Execute {
     }
 
     async run() {
-        const select = await this.initialize();
-        switch (select) {
+        switch (await this.initialize()) {
             case (true):
                 this.run();
                 break;
             case (false):
+                console.log(employeeAggData)
                 break;
         }
     }
