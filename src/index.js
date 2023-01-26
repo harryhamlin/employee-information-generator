@@ -1,7 +1,4 @@
-// <====== required modules ======>
-const Execute = require(`./execute`)
+const Initialize = require('./initialize');
+const initialize = new Initialize;
 
-// <====== executes application ======>
-const execute = new Execute;
-execute.init();
-
+initialize.init()
