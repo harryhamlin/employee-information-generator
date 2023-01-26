@@ -1,21 +1,31 @@
 // <====== required packages ======>
-const Prompts = require(`../lib/prompts`)
+const Prompts = require(`../lib/prompts`);
+const Card = require('../lib/card');
+const Head = require('../lib/head');
+const Data = require('../lib/data');
+const fs = require(`fs`)
 
 const prompts = new Prompts;
 
+let q
+
 // <====== class for commandline functions ======>
 class Execute {
+
+    // <====== declares empty array to store employee data objects ======>
+    employeeAggData = []
+
     // <====== branch function runs user through all prompts returning boolean as to whether or not user wants to add another employee ======>
     async branch() {
         switch (await prompts.fork()) {
             case 'manager':
-                await prompts.manager();
+                this.employeeAggData.push(await prompts.manager());
                 break;
             case 'engineer':
-                await prompts.engineer();
+                this.employeeAggData.push(await prompts.engineer());
                 break;
             case 'intern':
-                await prompts.intern();
+                this.employeeAggData.push(await prompts.intern());
                 break;
         }
         return await prompts.again()
@@ -28,10 +38,21 @@ class Execute {
                 this.init();
                 break;
             case (false):
-                console.log(prompts.employeeAggData)
-                break;
+                this.process(this.employeeAggData)
         }
+    }
+
+    process(data) {
+        const head = new Head(data)
+        fs.writeFile('../dist/index.html', head.renderHTML(data), 'utf8', function (err) {
+            (err) ? console.log(err) : console.log('written to file');
+        })
     }
 }
 
-module.exports = Execute;
+const execute = new Execute;
+
+
+execute.init()
+
+
