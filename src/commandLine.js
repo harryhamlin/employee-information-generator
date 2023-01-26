@@ -1,18 +1,15 @@
 // <====== required packages ======>
 const Prompts = require(`../lib/prompts`);
-const Card = require('../lib/card');
 const Head = require('../lib/head');
-const Data = require('../lib/data');
-const fs = require(`fs`)
+const fs = require(`fs`);
 
+// <====== creates new prompts constructor ======>
 const prompts = new Prompts;
 
-let q
-
-// <====== class for commandline functions ======>
+// <====== class for commandline functions and filesystems functions ======>
 class Execute {
 
-    // <====== declares empty array to store employee data objects ======>
+    // <====== declares empty array to store employee html cards ======>
     employeeAggData = []
 
     // <====== branch function runs user through all prompts returning boolean as to whether or not user wants to add another employee ======>
@@ -31,7 +28,7 @@ class Execute {
         return await prompts.again()
     }
 
-    // <====== init function awaits the above branch function, if user wants to add another employee, then it runs init, otherwise ends the prompts ======>
+    // <====== init function awaits the above branch function, if user wants to add another employee, then it runs init, executes the process function ======>
     async init() {
         switch (await this.branch()) {
             case (true):
@@ -42,17 +39,22 @@ class Execute {
         }
     }
 
-    process(data) {
-        const head = new Head(data)
-        fs.writeFile('../dist/index.html', head.renderHTML(data), 'utf8', function (err) {
+    // <====== writes data to index.html file in dist directory ======>
+    write(data) {
+        fs.writeFile('../dist/index.html', data, 'utf8', function (err) {
             (err) ? console.log(err) : console.log('written to file');
         })
     }
+
+    // <====== process function takes employeeAggData array (with html cards) and utilizes the head constructor and renderHTML function to create webpage, passing this data into the write function ======>
+    process(data) {
+        const head = new Head(data);
+        this.write(head.renderHTML());
+    }
 }
 
-const execute = new Execute;
 
 
-execute.init()
+module.exports = Execute
 
 
