@@ -12,12 +12,20 @@ class Execute {
     // <====== declares empty array to store employee html cards ======>
     employeeAggData = []
 
-    // <====== branch function runs user through all prompts returning boolean as to whether or not user wants to add another employee ======>
+    // <====== init function starts by asking for manager information, and then prompts whether or not to add another employee, running add() if true and process() if false ======>
+    async init() {
+        console.log('manager information')
+        this.employeeAggData.push(await prompts.manager())
+        if (await prompts.again()){
+            await this.add()
+        } else {
+            this.process(this.employeeAggData)
+        }
+    }
+    
+    // <====== asks user which type of employee they want to add ======>
     async branch() {
         switch (await prompts.fork()) {
-            case 'manager':
-                this.employeeAggData.push(await prompts.manager());
-                break;
             case 'engineer':
                 this.employeeAggData.push(await prompts.engineer());
                 break;
@@ -28,11 +36,11 @@ class Execute {
         return await prompts.again()
     }
 
-    // <====== init function awaits the above branch function, if user wants to add another employee, then it runs init, executes the process function ======>
-    async init() {
+    // <====== add function checks to see if user wants to add another employee, if true running itself again, if false running process()
+    async add() {
         switch (await this.branch()) {
             case (true):
-                this.init();
+                this.add();
                 break;
             case (false):
                 this.process(this.employeeAggData)
