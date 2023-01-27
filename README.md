@@ -12,17 +12,18 @@ This application takes information input by the user from the command line and g
 3. [Contributing](#contributing)
 4. [Tests](#tests)
 5. [Questions](#questions)
-  
-
-
 
 ## Installation
 
+Users can install the application from npm using the following prompt in the command line:
 
+npm i @harryhamlin/employee-information-generator
 
 ## Usage
 
+View the usage demonstration video here:
 
+<a href="https://youtu.be/hlPwYKAE0G4" target='_blank'>https://youtu.be/hlPwYKAE0G4</a>
 
 ## Contributing
 
@@ -30,7 +31,7 @@ This application takes information input by the user from the command line and g
 
 ## Tests
 
-
+Included in this preliminary submission is a cohesive test of the Card class, in card.js
 
 ## Questions
 
